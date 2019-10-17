@@ -40,124 +40,91 @@ class Maze:
         self.boxesToChange.remove((0,0))
 
 
+    #This function is used next. 
+    #It updates all the boxes groupnumber depending on the groupnumber of the chosen box, and its adjacent box.
+    #See Maze.Build() for the choice of the box and its adjacent box. .
 
+    def updateGN(self,adjacentGN,currentGN) :
+        if adjacentGN < currentGN:
+                    for coordX in range(settings.COLUMNS) :
+                        for coordY in range(settings.ROWS) :
+                            if self.core[coordX][coordY].groupNumber == currentGN :
+                                self.core[coordX][coordY].groupNumber = adjacentGN
+        else:
+            for coordX in range(settings.COLUMNS) :
+                for coordY in range(settings.ROWS) :
+                    if self.core[coordX][coordY].groupNumber == adjacentGN :
+                        self.core[coordX][coordY].groupNumber = currentGN
+        
 
-    """functions for case...switch statement
+    """functions for case...switch statement used in Maze.build()
     They chose the wall to destroy, following two rules :
     -A wall on the edge of a maze cannot be destroyed
     -A wall separating two boxes with the same group number cannot be destroyed
+    The three functions are very similar
     """
 
     def north(self,x,y) :
         if (x!=0) : #first rule
             adjacentBoxGN = self.core[x-1][y].groupNumber
-            if adjacentBoxGN != self.core[x][y].groupNumber:
+            if adjacentBoxGN != self.core[x][y].groupNumber: #second rule
                 self.core[x][y].removeWallNorth()
                 self.core[x-1][y].removeWallSouth()
-
-                #let's update the groupNumbers
-                if adjacentBoxGN < self.core[x][y].groupNumber:
-                    self.core[x][y].groupNumber = adjacentBoxGN
-                else:
-                    updatedGN = self.core[x][y].groupNumber
-                    for coordX in range(settings.COLUMNS) :
-                        for coordY in range(settings.ROWS) :
-                            if self.core[coordX][coordY].groupNumber == adjacentBoxGN :
-                                self.core[coordX][coordY].groupNumber = updatedGN
+                self.updateGN(adjacentBoxGN,self.core[x][y].groupNumber)
                 
-                if self.core[x][y].groupNumber == 0 : #if our box is in the same group as the enter
-                    self.boxesToChange.remove((x,y)) # we remove it from the boxesToChange list, this box is done !
+                
+        if self.core[x][y].groupNumber == 0 : #if our box is in the same group as the enter
+            self.boxesToChange.remove((x,y)) # we remove it from the boxesToChange list, this box is done !
 
     def east(self,x,y) :
         if (y!=settings.COLUMNS-1) : #first rule
             adjacentBoxGN = self.core[x][y+1].groupNumber
-            if adjacentBoxGN != self.core[x][y].groupNumber:
+            if adjacentBoxGN != self.core[x][y].groupNumber: #second rule
                 self.core[x][y].removeWallEast()
                 self.core[x][y+1].removeWallWest()
-
-                #let's update the groupNumbers
-                if adjacentBoxGN < self.core[x][y].groupNumber:
-                    self.core[x][y].groupNumber = adjacentBoxGN
-                else:
-                    updatedGN = self.core[x][y].groupNumber
-                    for coordX in range(settings.COLUMNS) :
-                        for coordY in range(settings.ROWS) :
-                            if self.core[coordX][coordY].groupNumber == adjacentBoxGN :
-                                self.core[coordX][coordY].groupNumber = updatedGN
+                self.updateGN(adjacentBoxGN,self.core[x][y].groupNumber)
                 
-                if self.core[x][y].groupNumber == 0 : #if our box is in the same group as the enter
-                    self.boxesToChange.remove((x,y)) # we remove it from the boxesToChange list, this box is done !
+        if self.core[x][y].groupNumber == 0 : #if our box is in the same group as the enter
+            self.boxesToChange.remove((x,y)) # we remove it from the boxesToChange list, this box is done !
 
     def south(self,x,y) :
         if (x!=settings.ROWS-1) : #first rule
             adjacentBoxGN = self.core[x+1][y].groupNumber
-            if adjacentBoxGN != self.core[x][y].groupNumber:
+            if adjacentBoxGN != self.core[x][y].groupNumber: #second rule
                 self.core[x][y].removeWallSouth()
                 self.core[x+1][y].removeWallNorth()
-
-                #let's update the groupNumbers
-                if adjacentBoxGN < self.core[x][y].groupNumber:
-                    self.core[x][y].groupNumber = adjacentBoxGN
-                else:
-                    updatedGN = self.core[x][y].groupNumber
-                    for coordX in range(settings.COLUMNS) :
-                        for coordY in range(settings.ROWS) :
-                            if self.core[coordX][coordY].groupNumber == adjacentBoxGN :
-                                self.core[coordX][coordY].groupNumber = updatedGN
+                self.updateGN(adjacentBoxGN,self.core[x][y].groupNumber)
                 
-                if self.core[x][y].groupNumber == 0 : #if our box is in the same group as the enter
-                    self.boxesToChange.remove((x,y)) # we remove it from the boxesToChange list, this box is done !
+        if self.core[x][y].groupNumber == 0 : #if our box is in the same group as the enter
+            self.boxesToChange.remove((x,y)) # we remove it from the boxesToChange list, this box is done !
 
     def west(self,x,y) :
         if (y!=0) : #first rule
             adjacentBoxGN = self.core[x][y-1].groupNumber
-            if adjacentBoxGN != self.core[x][y].groupNumber:
+            if adjacentBoxGN != self.core[x][y].groupNumber: #second rule
                 self.core[x][y].removeWallWest()
                 self.core[x][y-1].removeWallEast()
-
-                #let's update the groupNumbers
-                if adjacentBoxGN < self.core[x][y].groupNumber:
-                    self.core[x][y].groupNumber = adjacentBoxGN
-                else:
-                    updatedGN = self.core[x][y].groupNumber
-                    for coordX in range(settings.COLUMNS) :
-                        for coordY in range(settings.ROWS) :
-                            if self.core[coordX][coordY].groupNumber == adjacentBoxGN :
-                                self.core[coordX][coordY].groupNumber = updatedGN
+                self.updateGN(adjacentBoxGN,self.core[x][y].groupNumber)
                 
-                if self.core[x][y].groupNumber == 0 : #if our box is in the same group as the enter
-                    self.boxesToChange.remove((x,y)) # we remove it from the boxesToChange list, this box is done !
+        if self.core[x][y].groupNumber == 0 : #if our box is in the same group as the enter
+            self.boxesToChange.remove((x,y)) # we remove it from the boxesToChange list, this box is done !
     
     
 
-    #builds the maze, using the 4 earlier functions in a case...switch like statement
+    #builds the maze, using the 4 previous functions
     def build(self) :
         while (len(self.boxesToChange) != 0):
-            for column in self.core :
-                for line in column :
-                    print (str(line.groupNumber), end= '')
-                print()
-            input("Continue ?")
             x,y = random.choice(self.boxesToChange)
             randomWall = random.randint(1,4)
-            if randomWall == 1:
-                self.north(x,y)
-            elif randomWall == 2:
-                self.east(x,y)
-            elif randomWall == 3:
-                self.south(x,y)
-            elif randomWall == 4:
-                self.west(x,y)
+            _directions = {1:self.north , 2:self.east , 3:self.south , 4:self.west ,}[randomWall](x,y)
 
-    def drawMap(self):
 
+    def Map(self):
         column = 0
         row = 0
         for _cpt in range(settings.ROWS*settings.COLUMNS) :
-            
             self.map[row][column] = self.core[row][column].walls
             column += 1
-
             if (column)==settings.COLUMNS : #when we are at the end of the line
                 column=0
                 row += 1
