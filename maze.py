@@ -2,6 +2,19 @@ import settings
 import box
 import random
 
+
+
+#==============Functions==============#
+
+#Create a new Maze and return its map.
+def newMaze() :
+    createdMaze = Maze()
+    createdMaze.build()
+    createdMaze.Map()
+    return createdMaze.map
+
+#==============Class==============#
+
 #a maze is made of boxes. Two of them are special : an exit, and an enter.
 
 
@@ -46,18 +59,18 @@ class Maze:
 
     def updateGN(self,adjacentGN,currentGN) :
         if adjacentGN < currentGN:
-                    for coordX in range(settings.COLUMNS) :
-                        for coordY in range(settings.ROWS) :
+                    for coordX in range(settings.ROWS) :
+                        for coordY in range(settings.COLUMNS) :
                             if self.core[coordX][coordY].groupNumber == currentGN :
                                 self.core[coordX][coordY].groupNumber = adjacentGN
         else:
-            for coordX in range(settings.COLUMNS) :
-                for coordY in range(settings.ROWS) :
+            for coordX in range(settings.ROWS) :
+                for coordY in range(settings.COLUMNS) :
                     if self.core[coordX][coordY].groupNumber == adjacentGN :
                         self.core[coordX][coordY].groupNumber = currentGN
         
 
-    """functions for case...switch statement used in Maze.build()
+    """functions for case...switch like statement used in Maze.build()
     They chose the wall to destroy, following two rules :
     -A wall on the edge of a maze cannot be destroyed
     -A wall separating two boxes with the same group number cannot be destroyed
