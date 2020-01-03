@@ -130,6 +130,8 @@ class Maze:
                 column=0
                 row += 1
 
+   
+
 
 
 

@@ -1,6 +1,7 @@
 import gui
 import globals
 import sys
+import random
 
 
 
@@ -22,6 +23,7 @@ window.ui.graphicsView.centerOn(10,0)
 window.showMaximized()
 
 sys.exit(app.exec_())
+
 
 
 

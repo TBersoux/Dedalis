@@ -1,15 +1,14 @@
 import globals
 import maze
 import threading
+import player
+import random
 
 from PySide2 import QtUiTools #pylint: disable=no-name-in-module
 from PySide2.QtWidgets import QApplication, QMainWindow, QGraphicsScene,QGraphicsView #pylint: disable=no-name-in-module
 from PySide2.QtCore import QFile, Qt, QRect, Signal, QRunnable, QThreadPool, QObject #pylint: disable=no-name-in-module
-from PySide2.QtGui import QPainter, QBrush, QPen, QScreen  #pylint: disable=no-name-in-module
+from PySide2.QtGui import QPainter, QBrush, QPen, QScreen, QColor  #pylint: disable=no-name-in-module
 from ui_mainwindow import Ui_MainWindow
-
-
-
 
 #Base class imported from ui_mainwindow.py, created with qt designer
 class MainWindow(QMainWindow):
@@ -27,6 +26,7 @@ class MainWindow(QMainWindow):
 
         self.threadpool = QThreadPool()
 
+    #========TAB Generation functions===========
 
     def setHeight(self):
         globals.ROWS = int(self.ui.editH.text())
@@ -61,6 +61,38 @@ class MainWindow(QMainWindow):
 
         self.threadpool.start(builder)
 
+    #========TAB Singleplayer functions===========
+    def initPlayer(self):
+        self.player1 = player.Player()
+        self.player1Pos = self.scene.addLine(4,4,4,4,self.scene.penPlayer1Trace)
+        self.player1Pos = self.scene.addLine(4,4,4,4,self.scene.penPlayer1)
+        
+
+        
+        
+    #Player movements drawings
+
+    def playerUp(self):
+        if self.player1.up(self.savedMaze.map) :
+            self.scene.removeItem(self.player1Pos)
+            self.scene.addLine(self.player1.column*globals.BOXSIDE+4,(self.player1.row+1)*globals.BOXSIDE+4,self.player1.column*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.scene.penPlayer1Trace)
+            self.player1Pos = self.scene.addLine(self.player1.column*globals.BOXSIDE+4,(self.player1.row+1)*globals.BOXSIDE+4,self.player1.column*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.scene.penPlayer1)
+    def playerDown(self):
+        if self.player1.down(self.savedMaze.map) :
+            self.scene.removeItem(self.player1Pos)
+            self.scene.addLine(self.player1.column*globals.BOXSIDE+4,(self.player1.row-1)*globals.BOXSIDE+4,self.player1.column*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.scene.penPlayer1Trace)
+            self.player1Pos = self.scene.addLine(self.player1.column*globals.BOXSIDE+4,(self.player1.row-1)*globals.BOXSIDE+4,self.player1.column*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.scene.penPlayer1)
+    def playerLeft(self):
+        if self.player1.left(self.savedMaze.map) :
+            self.scene.removeItem(self.player1Pos)
+            self.scene.addLine((self.player1.column+1)*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.player1.column*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.scene.penPlayer1Trace)
+            self.player1Pos = self.scene.addLine((self.player1.column+1)*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.player1.column*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.scene.penPlayer1)
+    def playerRight(self):
+        if self.player1.right(self.savedMaze.map) :
+            self.scene.removeItem(self.player1Pos)
+            self.scene.addLine((self.player1.column-1)*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.player1.column*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.scene.penPlayer1Trace)
+            self.player1Pos = self.scene.addLine((self.player1.column-1)*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.player1.column*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.scene.penPlayer1)
+
 
 
         
@@ -69,7 +101,18 @@ class sceneMaze(QGraphicsScene):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.penMaze = QPen(Qt.black,3)
-        self.penPlayer1 = QPen(Qt.red,1)
+
+        self.penPlayer1 = QPen(QColor(255, 0, 0),3)
+        self.penPlayer1Trace = QPen(QColor(255, 155, 155),3)
+        self.penPlayer2 = QPen(QColor(0, 255, 0),3)
+        self.penPlayer2Trace = QPen(QColor(155, 255, 155),3)
+        self.penPlayer3 = QPen(QColor(0, 0, 255),3)
+        self.penPlayer3Trace = QPen(QColor(155, 155, 255),3)
+        self.penPlayer4 = QPen(QColor(255, 0, 255),3)
+        self.penPlayer4Trace = QPen(QColor(255, 155, 255),3)
+
+
+        self.changed.connect(self.update)
 
 
 # Defining signals of the thread Builder
@@ -78,6 +121,10 @@ class BuilderSignals(QObject):
     started = Signal()
     finished = Signal()
     result = Signal(maze.Maze)
+class aiSignals(QObject):
+    started = Signal()
+    finished = Signal()
+    result = Signal()
 
 # Defining the thread Builder
 class Builder(QRunnable):
@@ -95,63 +142,59 @@ class Builder(QRunnable):
 
 
 
-#Draw a box on a scene at given coordinates
-def drawBox(scene,pen,code,x,y) :
 
-#Just making sure the boxes are not too close from the sides by adding an invisible rectangle
-    scene.addRect(0,0,10,10,QPen(Qt.white,1),QBrush(Qt.white))
-    x+=11
-    y+=11
-#===========================
+#Draw a box on a scene at given coordinates
+def drawBox(scene,pen,code,row,column) :
+
     if code == 0:
         pass
     elif code == 1:
-        scene.addLine(x,y,x,y+globals.BOXSIDE,pen)
+        scene.addLine(row,column,row,column+globals.BOXSIDE,pen)
     elif code == 2:
-        scene.addLine(x,y+globals.BOXSIDE,x+globals.BOXSIDE,y+globals.BOXSIDE,pen)
+        scene.addLine(row,column+globals.BOXSIDE,row+globals.BOXSIDE,column+globals.BOXSIDE,pen)
     elif code == 3:
-        scene.addLine(x,y,x,y+globals.BOXSIDE,pen)
-        scene.addLine(x,y+globals.BOXSIDE,x+globals.BOXSIDE,y+globals.BOXSIDE,pen)
+        scene.addLine(row,column,row,column+globals.BOXSIDE,pen)
+        scene.addLine(row,column+globals.BOXSIDE,row+globals.BOXSIDE,column+globals.BOXSIDE,pen)
     elif code == 4:
-        scene.addLine(x+globals.BOXSIDE,y,x+globals.BOXSIDE,y+globals.BOXSIDE,pen)
+        scene.addLine(row+globals.BOXSIDE,column,row+globals.BOXSIDE,column+globals.BOXSIDE,pen)
     elif code == 5:
-        scene.addLine(x,y,x,y+globals.BOXSIDE,pen)
-        scene.addLine(x+globals.BOXSIDE,y,x+globals.BOXSIDE,y+globals.BOXSIDE,pen)
+        scene.addLine(row,column,row,column+globals.BOXSIDE,pen)
+        scene.addLine(row+globals.BOXSIDE,column,row+globals.BOXSIDE,column+globals.BOXSIDE,pen)
     elif code == 6:
-        scene.addLine(x,y+globals.BOXSIDE,x+globals.BOXSIDE,y+globals.BOXSIDE,pen)
-        scene.addLine(x+globals.BOXSIDE,y,x+globals.BOXSIDE,y+globals.BOXSIDE,pen)
+        scene.addLine(row,column+globals.BOXSIDE,row+globals.BOXSIDE,column+globals.BOXSIDE,pen)
+        scene.addLine(row+globals.BOXSIDE,column,row+globals.BOXSIDE,column+globals.BOXSIDE,pen)
     elif code == 7:
-        scene.addLine(x,y+globals.BOXSIDE,x+globals.BOXSIDE,y+globals.BOXSIDE,pen)
-        scene.addLine(x+globals.BOXSIDE,y,x+globals.BOXSIDE,y+globals.BOXSIDE,pen)
-        scene.addLine(x,y,x,y+globals.BOXSIDE,pen)
+        scene.addLine(row,column+globals.BOXSIDE,row+globals.BOXSIDE,column+globals.BOXSIDE,pen)
+        scene.addLine(row+globals.BOXSIDE,column,row+globals.BOXSIDE,column+globals.BOXSIDE,pen)
+        scene.addLine(row,column,row,column+globals.BOXSIDE,pen)
     elif code == 8:
-        scene.addLine(x,y,x+globals.BOXSIDE,y,pen)
+        scene.addLine(row,column,row+globals.BOXSIDE,column,pen)
     elif code == 9:
-        scene.addLine(x,y,x+globals.BOXSIDE,y,pen)
-        scene.addLine(x,y,x,y+globals.BOXSIDE,pen)
+        scene.addLine(row,column,row+globals.BOXSIDE,column,pen)
+        scene.addLine(row,column,row,column+globals.BOXSIDE,pen)
     elif code == 10:
-        scene.addLine(x,y,x+globals.BOXSIDE,y,pen)
-        scene.addLine(x,y+globals.BOXSIDE,x+globals.BOXSIDE,y+globals.BOXSIDE,pen)
+        scene.addLine(row,column,row+globals.BOXSIDE,column,pen)
+        scene.addLine(row,column+globals.BOXSIDE,row+globals.BOXSIDE,column+globals.BOXSIDE,pen)
     elif code == 11:
-        scene.addLine(x,y,x+globals.BOXSIDE,y,pen)
-        scene.addLine(x,y+globals.BOXSIDE,x+globals.BOXSIDE,y+globals.BOXSIDE,pen)
-        scene.addLine(x,y,x,y+globals.BOXSIDE)
+        scene.addLine(row,column,row+globals.BOXSIDE,column,pen)
+        scene.addLine(row,column+globals.BOXSIDE,row+globals.BOXSIDE,column+globals.BOXSIDE,pen)
+        scene.addLine(row,column,row,column+globals.BOXSIDE)
     elif code == 12:
-        scene.addLine(x,y,x+globals.BOXSIDE,y,pen)
-        scene.addLine(x+globals.BOXSIDE,y,x+globals.BOXSIDE,y+globals.BOXSIDE,pen)
+        scene.addLine(row,column,row+globals.BOXSIDE,column,pen)
+        scene.addLine(row+globals.BOXSIDE,column,row+globals.BOXSIDE,column+globals.BOXSIDE,pen)
     elif code == 13:
-        scene.addLine(x,y,x+globals.BOXSIDE,y,pen)
-        scene.addLine(x+globals.BOXSIDE,y,x+globals.BOXSIDE,y+globals.BOXSIDE,pen)
-        scene.addLine(x,y,x,y+globals.BOXSIDE,pen)
+        scene.addLine(row,column,row+globals.BOXSIDE,column,pen)
+        scene.addLine(row+globals.BOXSIDE,column,row+globals.BOXSIDE,column+globals.BOXSIDE,pen)
+        scene.addLine(row,column,row,column+globals.BOXSIDE,pen)
     elif code == 14:
-        scene.addLine(x,y,x+globals.BOXSIDE,y,pen)
-        scene.addLine(x+globals.BOXSIDE,y,x+globals.BOXSIDE,y+globals.BOXSIDE,pen)
-        scene.addLine(x,y+globals.BOXSIDE,x+globals.BOXSIDE,y+globals.BOXSIDE,pen)
+        scene.addLine(row,column,row+globals.BOXSIDE,column,pen)
+        scene.addLine(row+globals.BOXSIDE,column,row+globals.BOXSIDE,column+globals.BOXSIDE,pen)
+        scene.addLine(row,column+globals.BOXSIDE,row+globals.BOXSIDE,column+globals.BOXSIDE,pen)
     elif code == 15:
-        scene.addLine(x,y,x+globals.BOXSIDE,y,pen)
-        scene.addLine(x+globals.BOXSIDE,y,x+globals.BOXSIDE,y+globals.BOXSIDE,pen)
-        scene.addLine(x,y+globals.BOXSIDE,x+globals.BOXSIDE,y+globals.BOXSIDE,pen)
-        scene.addLine(x,y,x,y+globals.BOXSIDE,pen)
+        scene.addLine(row,column,row+globals.BOXSIDE,column,pen)
+        scene.addLine(row+globals.BOXSIDE,column,row+globals.BOXSIDE,column+globals.BOXSIDE,pen)
+        scene.addLine(row,column+globals.BOXSIDE,row+globals.BOXSIDE,column+globals.BOXSIDE,pen)
+        scene.addLine(row,column,row,column+globals.BOXSIDE,pen)
 
 
 

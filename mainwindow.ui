@@ -36,7 +36,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabGeneration">
        <attribute name="title">
@@ -155,6 +155,96 @@
        <attribute name="title">
         <string>Singleplayer</string>
        </attribute>
+       <widget class="QPushButton" name="buttonInitPlayer">
+        <property name="geometry">
+         <rect>
+          <x>950</x>
+          <y>0</y>
+          <width>89</width>
+          <height>61</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Init player</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="buttonUp">
+        <property name="geometry">
+         <rect>
+          <x>90</x>
+          <y>0</y>
+          <width>89</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Up</string>
+        </property>
+        <property name="shortcut">
+         <string>Up</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="buttonLeft">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>20</y>
+          <width>89</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Left</string>
+        </property>
+        <property name="shortcut">
+         <string>Left</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="buttonRight">
+        <property name="geometry">
+         <rect>
+          <x>180</x>
+          <y>20</y>
+          <width>89</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Right</string>
+        </property>
+        <property name="shortcut">
+         <string>Right</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="buttonDown">
+        <property name="geometry">
+         <rect>
+          <x>90</x>
+          <y>40</y>
+          <width>89</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Down</string>
+        </property>
+        <property name="shortcut">
+         <string>Down</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>50</y>
+          <width>271</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>(Tip : Use your keyboard !)</string>
+        </property>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -180,8 +270,8 @@
    <slot>setWidth()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>69</y>
+     <x>158</x>
+     <y>86</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -212,12 +302,92 @@
    <slot>buttonDrawClicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>378</x>
-     <y>68</y>
+     <x>390</x>
+     <y>85</y>
     </hint>
     <hint type="destinationlabel">
      <x>3</x>
      <y>257</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonUp</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>playerUp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>365</x>
+     <y>50</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>533</x>
+     <y>293</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonDown</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>playerDown()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>365</x>
+     <y>90</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>533</x>
+     <y>293</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonInitPlayer</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>initPlayer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>995</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>533</x>
+     <y>293</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonLeft</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>playerLeft()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>275</x>
+     <y>70</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>533</x>
+     <y>293</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonRight</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>playerRight()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>455</x>
+     <y>70</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>533</x>
+     <y>293</y>
     </hint>
    </hints>
   </connection>
@@ -227,5 +397,10 @@
   <slot>setWidth()</slot>
   <slot>setHeight()</slot>
   <slot>buttonDrawClicked()</slot>
+  <slot>initPlayer()</slot>
+  <slot>playerUp()</slot>
+  <slot>playerDown()</slot>
+  <slot>playerLeft()</slot>
+  <slot>playerRight()</slot>
  </slots>
 </ui>
