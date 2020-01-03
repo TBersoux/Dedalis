@@ -1,5 +1,5 @@
 import gui
-import settings
+import globals
 import sys
 
 
@@ -7,13 +7,13 @@ import sys
 
 
 #==============Initializations==============#
-settings.init()
+globals.init()
 
 #==================GUI======================#
 
 app = gui.QApplication(sys.argv)
 
-window = gui.MainWindow(gui.sceneMaze())
+window = gui.MainWindow()
 window.resize(gui.QScreen().availableGeometry().size())
 
 window.ui.graphicsView.setScene(window.scene)

@@ -6,108 +6,173 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1068</width>
+    <height>587</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QLabel" name="labelW">
-      <property name="text">
-       <string>Width</string>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
+      <property name="minimumSize">
+       <size>
+        <width>500</width>
+        <height>100</height>
+       </size>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tabGeneration">
+       <attribute name="title">
+        <string>Generation</string>
+       </attribute>
+       <widget class="QLabel" name="labelW">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>142</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Width</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="editH">
+        <property name="geometry">
+         <rect>
+          <x>158</x>
+          <y>33</y>
+          <width>142</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>40</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="editW">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>33</y>
+          <width>142</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>40</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="labelH">
+        <property name="geometry">
+         <rect>
+          <x>158</x>
+          <y>10</y>
+          <width>142</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Height</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="buttonDrawMaze">
+        <property name="geometry">
+         <rect>
+          <x>306</x>
+          <y>33</y>
+          <width>127</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>127</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Draw a new maze</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="labelWait">
+        <property name="geometry">
+         <rect>
+          <x>439</x>
+          <y>33</y>
+          <width>597</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Please wait ...</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_Singleplayer">
+       <attribute name="title">
+        <string>Singleplayer</string>
+       </attribute>
+      </widget>
      </widget>
     </item>
-    <item row="0" column="2">
-     <widget class="QLabel" name="labelH">
-      <property name="text">
-       <string>Height</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QLineEdit" name="editH">
-      <property name="text">
-       <string>40</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="2">
-     <widget class="QPushButton" name="buttonClear">
-      <property name="text">
-       <string>Clear drawing</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QPushButton" name="buttonDrawMaze">
-      <property name="text">
-       <string>Draw a new maze</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0" colspan="3">
-     <widget class="QGraphicsView" name="graphicsView"/>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLineEdit" name="editW">
-      <property name="text">
-       <string>40</string>
+    <item>
+     <widget class="QGraphicsView" name="graphicsView">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
      </widget>
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>buttonDrawMaze</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>drawMaze()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>328</x>
-     <y>101</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>7</x>
-     <y>211</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonClear</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>clear()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>567</x>
-     <y>106</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>796</x>
-     <y>169</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>editW</sender>
    <signal>editingFinished()</signal>
@@ -131,8 +196,8 @@
    <slot>setHeight()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>492</x>
-     <y>71</y>
+     <x>298</x>
+     <y>78</y>
     </hint>
     <hint type="destinationlabel">
      <x>796</x>
@@ -140,11 +205,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>buttonDrawMaze</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>buttonDrawClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>378</x>
+     <y>68</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>3</x>
+     <y>257</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
-  <slot>drawMaze()</slot>
   <slot>clear()</slot>
   <slot>setWidth()</slot>
   <slot>setHeight()</slot>
+  <slot>buttonDrawClicked()</slot>
  </slots>
 </ui>

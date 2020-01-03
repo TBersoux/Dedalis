@@ -1,19 +1,7 @@
-import settings
+import globals
 import box
 import random
 
-
-
-#==============Functions==============#
-
-#Create a new Maze and return its map.
-def newMaze() :
-    createdMaze = Maze()
-    createdMaze.build()
-    createdMaze.Map()
-    return createdMaze.map
-
-#==============Class==============#
 
 #a maze is made of boxes. Two of them are special : an exit, and an enter.
 
@@ -26,17 +14,17 @@ class Maze:
         
 
         #initialization of 2D lists with empty boxes
-        for row in range(settings.ROWS) :
+        for row in range(globals.ROWS) :
             self.core.append([])
             self.map.append([])
-            for _column in range(settings.COLUMNS) :
+            for _column in range(globals.COLUMNS) :
                 self.core[row].append(box.Box())
                 self.map[row].append([])
 
         #initialization of their values
         column = 0
         row = 0
-        for cpt in range(settings.ROWS*settings.COLUMNS) :
+        for cpt in range(globals.ROWS*globals.COLUMNS) :
             self.core[row][column].groupNumber = cpt
             self.core[row][column].coordX = row
             self.core[row][column].coordY = column
@@ -44,12 +32,12 @@ class Maze:
             self.boxesToChange.append(((row,column))) #Will be useful for building the maze
             column += 1
 
-            if (column)==settings.COLUMNS : #when we are at the end of the line
+            if (column)==globals.COLUMNS : #when we are at the end of the line
                 column=0
                 row += 1
         
         self.core[0][0].makeEnter()
-        self.core[settings.ROWS-1][settings.COLUMNS-1].makeExit()
+        self.core[globals.ROWS-1][globals.COLUMNS-1].makeExit()
         self.boxesToChange.remove((0,0))
 
 
@@ -59,13 +47,13 @@ class Maze:
 
     def updateGN(self,adjacentGN,currentGN) :
         if adjacentGN < currentGN:
-                    for coordX in range(settings.ROWS) :
-                        for coordY in range(settings.COLUMNS) :
+                    for coordX in range(globals.ROWS) :
+                        for coordY in range(globals.COLUMNS) :
                             if self.core[coordX][coordY].groupNumber == currentGN :
                                 self.core[coordX][coordY].groupNumber = adjacentGN
         else:
-            for coordX in range(settings.ROWS) :
-                for coordY in range(settings.COLUMNS) :
+            for coordX in range(globals.ROWS) :
+                for coordY in range(globals.COLUMNS) :
                     if self.core[coordX][coordY].groupNumber == adjacentGN :
                         self.core[coordX][coordY].groupNumber = currentGN
         
@@ -90,7 +78,7 @@ class Maze:
             self.boxesToChange.remove((x,y)) # we remove it from the boxesToChange list, this box is done !
 
     def east(self,x,y) :
-        if (y!=settings.COLUMNS-1) : #first rule
+        if (y!=globals.COLUMNS-1) : #first rule
             adjacentBoxGN = self.core[x][y+1].groupNumber
             if adjacentBoxGN != self.core[x][y].groupNumber: #second rule
                 self.core[x][y].removeWallEast()
@@ -101,7 +89,7 @@ class Maze:
             self.boxesToChange.remove((x,y)) # we remove it from the boxesToChange list, this box is done !
 
     def south(self,x,y) :
-        if (x!=settings.ROWS-1) : #first rule
+        if (x!=globals.ROWS-1) : #first rule
             adjacentBoxGN = self.core[x+1][y].groupNumber
             if adjacentBoxGN != self.core[x][y].groupNumber: #second rule
                 self.core[x][y].removeWallSouth()
@@ -135,12 +123,13 @@ class Maze:
     def Map(self):
         column = 0
         row = 0
-        for _cpt in range(settings.ROWS*settings.COLUMNS) :
+        for _cpt in range(globals.ROWS*globals.COLUMNS) :
             self.map[row][column] = self.core[row][column].walls
             column += 1
-            if (column)==settings.COLUMNS : #when we are at the end of the line
+            if (column)==globals.COLUMNS : #when we are at the end of the line
                 column=0
                 row += 1
+
 
 
 
