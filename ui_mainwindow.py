@@ -74,7 +74,7 @@ class Ui_MainWindow(object):
         self.tab_Singleplayer.setObjectName(u"tab_Singleplayer")
         self.buttonInitPlayer = QPushButton(self.tab_Singleplayer)
         self.buttonInitPlayer.setObjectName(u"buttonInitPlayer")
-        self.buttonInitPlayer.setGeometry(QRect(950, 0, 89, 61))
+        self.buttonInitPlayer.setGeometry(QRect(420, 0, 111, 61))
         self.buttonUp = QPushButton(self.tab_Singleplayer)
         self.buttonUp.setObjectName(u"buttonUp")
         self.buttonUp.setGeometry(QRect(90, 0, 89, 25))
@@ -90,6 +90,9 @@ class Ui_MainWindow(object):
         self.label = QLabel(self.tab_Singleplayer)
         self.label.setObjectName(u"label")
         self.label.setGeometry(QRect(200, 50, 271, 17))
+        self.buttonRandom = QPushButton(self.tab_Singleplayer)
+        self.buttonRandom.setObjectName(u"buttonRandom")
+        self.buttonRandom.setGeometry(QRect(540, 0, 111, 61))
         self.tabWidget.addTab(self.tab_Singleplayer, str())
 
         self.verticalLayout.addWidget(self.tabWidget)
@@ -110,11 +113,12 @@ class Ui_MainWindow(object):
         self.editW.editingFinished.connect(MainWindow.setWidth)
         self.editH.editingFinished.connect(MainWindow.setHeight)
         self.buttonDrawMaze.clicked.connect(MainWindow.buttonDrawClicked)
-        self.buttonUp.clicked.connect(MainWindow.playerUp)
-        self.buttonDown.clicked.connect(MainWindow.playerDown)
+        self.buttonUp.clicked.connect(MainWindow.buttonUpclicked)
+        self.buttonDown.clicked.connect(MainWindow.buttonDownclicked)
         self.buttonInitPlayer.clicked.connect(MainWindow.initPlayer)
-        self.buttonLeft.clicked.connect(MainWindow.playerLeft)
-        self.buttonRight.clicked.connect(MainWindow.playerRight)
+        self.buttonLeft.clicked.connect(MainWindow.buttonLeftclicked)
+        self.buttonRight.clicked.connect(MainWindow.buttonRightclicked)
+        self.buttonRandom.clicked.connect(MainWindow.randomAI)
 
         self.tabWidget.setCurrentIndex(1)
 
@@ -131,7 +135,7 @@ class Ui_MainWindow(object):
         self.buttonDrawMaze.setText(QCoreApplication.translate("MainWindow", u"Draw a new maze", None))
         self.labelWait.setText(QCoreApplication.translate("MainWindow", u"Please wait ...", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabGeneration), QCoreApplication.translate("MainWindow", u"Generation", None))
-        self.buttonInitPlayer.setText(QCoreApplication.translate("MainWindow", u"Init player", None))
+        self.buttonInitPlayer.setText(QCoreApplication.translate("MainWindow", u"Human Player", None))
         self.buttonUp.setText(QCoreApplication.translate("MainWindow", u"Up", None))
 #if QT_CONFIG(shortcut)
         self.buttonUp.setShortcut(QCoreApplication.translate("MainWindow", u"Up", None))
@@ -149,6 +153,7 @@ class Ui_MainWindow(object):
         self.buttonDown.setShortcut(QCoreApplication.translate("MainWindow", u"Down", None))
 #endif // QT_CONFIG(shortcut)
         self.label.setText(QCoreApplication.translate("MainWindow", u"(Tip : Use your keyboard !)", None))
+        self.buttonRandom.setText(QCoreApplication.translate("MainWindow", u"Random", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_Singleplayer), QCoreApplication.translate("MainWindow", u"Singleplayer", None))
     # retranslateUi
 

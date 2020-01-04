@@ -158,14 +158,14 @@
        <widget class="QPushButton" name="buttonInitPlayer">
         <property name="geometry">
          <rect>
-          <x>950</x>
+          <x>420</x>
           <y>0</y>
-          <width>89</width>
+          <width>111</width>
           <height>61</height>
          </rect>
         </property>
         <property name="text">
-         <string>Init player</string>
+         <string>Human Player</string>
         </property>
        </widget>
        <widget class="QPushButton" name="buttonUp">
@@ -245,6 +245,19 @@
          <string>(Tip : Use your keyboard !)</string>
         </property>
        </widget>
+       <widget class="QPushButton" name="buttonRandom">
+        <property name="geometry">
+         <rect>
+          <x>540</x>
+          <y>0</y>
+          <width>111</width>
+          <height>61</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Random</string>
+        </property>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -315,11 +328,11 @@
    <sender>buttonUp</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>playerUp()</slot>
+   <slot>buttonUpclicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>365</x>
-     <y>50</y>
+     <x>189</x>
+     <y>62</y>
     </hint>
     <hint type="destinationlabel">
      <x>533</x>
@@ -331,11 +344,11 @@
    <sender>buttonDown</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>playerDown()</slot>
+   <slot>buttonDownclicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>365</x>
-     <y>90</y>
+     <x>189</x>
+     <y>102</y>
     </hint>
     <hint type="destinationlabel">
      <x>533</x>
@@ -350,8 +363,8 @@
    <slot>initPlayer()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>995</x>
-     <y>72</y>
+     <x>476</x>
+     <y>98</y>
     </hint>
     <hint type="destinationlabel">
      <x>533</x>
@@ -363,11 +376,11 @@
    <sender>buttonLeft</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>playerLeft()</slot>
+   <slot>buttonLeftclicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>275</x>
-     <y>70</y>
+     <x>99</x>
+     <y>82</y>
     </hint>
     <hint type="destinationlabel">
      <x>533</x>
@@ -379,11 +392,27 @@
    <sender>buttonRight</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>playerRight()</slot>
+   <slot>buttonRightclicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>455</x>
-     <y>70</y>
+     <x>279</x>
+     <y>82</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>533</x>
+     <y>293</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonRandom</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>randomAI()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>606</x>
+     <y>68</y>
     </hint>
     <hint type="destinationlabel">
      <x>533</x>
@@ -398,9 +427,10 @@
   <slot>setHeight()</slot>
   <slot>buttonDrawClicked()</slot>
   <slot>initPlayer()</slot>
-  <slot>playerUp()</slot>
-  <slot>playerDown()</slot>
-  <slot>playerLeft()</slot>
-  <slot>playerRight()</slot>
+  <slot>buttonUpclicked()</slot>
+  <slot>buttonDownclicked()</slot>
+  <slot>buttonRightclicked()</slot>
+  <slot>buttonLeftclicked()</slot>
+  <slot>randomAI()</slot>
  </slots>
 </ui>

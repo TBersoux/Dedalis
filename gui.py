@@ -1,12 +1,13 @@
 import globals
 import maze
-import threading
+import sys
 import player
 import random
+import time
 
 from PySide2 import QtUiTools #pylint: disable=no-name-in-module
 from PySide2.QtWidgets import QApplication, QMainWindow, QGraphicsScene,QGraphicsView #pylint: disable=no-name-in-module
-from PySide2.QtCore import QFile, Qt, QRect, Signal, QRunnable, QThreadPool, QObject #pylint: disable=no-name-in-module
+from PySide2.QtCore import QFile, Qt, QRect, Signal, QRunnable, QThreadPool, QObject, QTimer #pylint: disable=no-name-in-module
 from PySide2.QtGui import QPainter, QBrush, QPen, QScreen, QColor  #pylint: disable=no-name-in-module
 from ui_mainwindow import Ui_MainWindow
 
@@ -25,6 +26,9 @@ class MainWindow(QMainWindow):
         self.ui.labelWait.hide()
 
         self.threadpool = QThreadPool()
+
+
+
 
     #========TAB Generation functions===========
 
@@ -62,36 +66,74 @@ class MainWindow(QMainWindow):
         self.threadpool.start(builder)
 
     #========TAB Singleplayer functions===========
+    def initPlayers(self):
+        player1 = player.Player(1)
+        player2 = player.Player(2)
+        player3 = player.Player(3)
+        player4 = player.Player(4)
+        self.players = [player1,player2,player3,player4]
+        self.scene.addLine(4,4,4,4,self.scene.penPlayer1Trace)
+        player1Pos = self.scene.addLine(4,4,4,4,self.scene.penPlayer1)
+
+        self.playersDrawings = [player1Pos]
+    
     def initPlayer(self):
-        self.player1 = player.Player()
-        self.player1Pos = self.scene.addLine(4,4,4,4,self.scene.penPlayer1Trace)
-        self.player1Pos = self.scene.addLine(4,4,4,4,self.scene.penPlayer1)
+        self.initPlayers()
+
+    def randomAI(self):
+        self.initPlayers()
+        randomAi = RandomAi()
+        randomAi.signals.output.connect(self.playerHumanMove)
+        self.threadpool.start(randomAi)
+
+    #Direction Buttons
+
+    def buttonUpclicked(self):
+        self.playerHumanMove(0)
+    def buttonRightclicked(self):
+        self.playerHumanMove(1)
+    def buttonDownclicked(self):
+        self.playerHumanMove(2)
+    def buttonLeftclicked(self):
+        self.playerHumanMove(3)
         
 
-        
-        
+    #Human players movements
+    def playerHumanMove(self,direction,playerNum=1):
+        hasMoved = False
+        if direction == 0: #North
+            hasMoved = self.players[playerNum-1].north(self.savedMaze.map)
+        elif direction == 1: #East
+            hasMoved = self.players[playerNum-1].east(self.savedMaze.map)
+        elif direction == 2: #South
+            hasMoved = self.players[playerNum-1].south(self.savedMaze.map)
+        elif direction == 3: #West
+            hasMoved = self.players[playerNum-1].west(self.savedMaze.map)
+        if hasMoved :
+            self.playerDraw(direction,playerNum)
+            if (self.players[playerNum-1].row == globals.ROWS and self.players[playerNum-1].column == globals.COLUMNS):
+                globals.fini = True
+            
     #Player movements drawings
 
-    def playerUp(self):
-        if self.player1.up(self.savedMaze.map) :
-            self.scene.removeItem(self.player1Pos)
-            self.scene.addLine(self.player1.column*globals.BOXSIDE+4,(self.player1.row+1)*globals.BOXSIDE+4,self.player1.column*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.scene.penPlayer1Trace)
-            self.player1Pos = self.scene.addLine(self.player1.column*globals.BOXSIDE+4,(self.player1.row+1)*globals.BOXSIDE+4,self.player1.column*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.scene.penPlayer1)
-    def playerDown(self):
-        if self.player1.down(self.savedMaze.map) :
-            self.scene.removeItem(self.player1Pos)
-            self.scene.addLine(self.player1.column*globals.BOXSIDE+4,(self.player1.row-1)*globals.BOXSIDE+4,self.player1.column*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.scene.penPlayer1Trace)
-            self.player1Pos = self.scene.addLine(self.player1.column*globals.BOXSIDE+4,(self.player1.row-1)*globals.BOXSIDE+4,self.player1.column*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.scene.penPlayer1)
-    def playerLeft(self):
-        if self.player1.left(self.savedMaze.map) :
-            self.scene.removeItem(self.player1Pos)
-            self.scene.addLine((self.player1.column+1)*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.player1.column*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.scene.penPlayer1Trace)
-            self.player1Pos = self.scene.addLine((self.player1.column+1)*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.player1.column*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.scene.penPlayer1)
-    def playerRight(self):
-        if self.player1.right(self.savedMaze.map) :
-            self.scene.removeItem(self.player1Pos)
-            self.scene.addLine((self.player1.column-1)*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.player1.column*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.scene.penPlayer1Trace)
-            self.player1Pos = self.scene.addLine((self.player1.column-1)*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.player1.column*globals.BOXSIDE+4,self.player1.row*globals.BOXSIDE+4,self.scene.penPlayer1)
+    def playerDraw(self,direction,playerNum):
+        if direction == 0: #North
+            self.scene.removeItem(self.playersDrawings[playerNum-1])
+            self.scene.addLine(self.players[playerNum-1].column*globals.BOXSIDE+4,(self.players[playerNum-1].row+1)*globals.BOXSIDE+4,self.players[playerNum-1].column*globals.BOXSIDE+4,self.players[playerNum-1].row*globals.BOXSIDE+4,self.scene.penPlayer1Trace)
+            self.playersDrawings[playerNum-1] = self.scene.addLine(self.players[playerNum-1].column*globals.BOXSIDE+4,(self.players[playerNum-1].row+1)*globals.BOXSIDE+4,self.players[playerNum-1].column*globals.BOXSIDE+4,self.players[playerNum-1].row*globals.BOXSIDE+4,self.scene.penPlayer1)
+        elif direction == 1: #East
+            self.scene.removeItem(self.playersDrawings[playerNum-1])
+            self.scene.addLine((self.players[playerNum-1].column-1)*globals.BOXSIDE+4,self.players[playerNum-1].row*globals.BOXSIDE+4,self.players[playerNum-1].column*globals.BOXSIDE+4,self.players[playerNum-1].row*globals.BOXSIDE+4,self.scene.penPlayer1Trace)
+            self.playersDrawings[playerNum-1] = self.scene.addLine((self.players[playerNum-1].column-1)*globals.BOXSIDE+4,self.players[playerNum-1].row*globals.BOXSIDE+4,self.players[playerNum-1].column*globals.BOXSIDE+4,self.players[playerNum-1].row*globals.BOXSIDE+4,self.scene.penPlayer1)
+        elif direction == 2: #South
+            self.scene.removeItem(self.playersDrawings[playerNum-1])
+            self.scene.addLine(self.players[playerNum-1].column*globals.BOXSIDE+4,(self.players[playerNum-1].row-1)*globals.BOXSIDE+4,self.players[playerNum-1].column*globals.BOXSIDE+4,self.players[playerNum-1].row*globals.BOXSIDE+4,self.scene.penPlayer1Trace)
+            self.playersDrawings[playerNum-1] = self.scene.addLine(self.players[playerNum-1].column*globals.BOXSIDE+4,(self.players[playerNum-1].row-1)*globals.BOXSIDE+4,self.players[playerNum-1].column*globals.BOXSIDE+4,self.players[playerNum-1].row*globals.BOXSIDE+4,self.scene.penPlayer1)
+        elif direction == 3: #West
+            self.scene.removeItem(self.playersDrawings[playerNum-1])
+            self.scene.addLine((self.players[playerNum-1].column+1)*globals.BOXSIDE+4,self.players[playerNum-1].row*globals.BOXSIDE+4,self.players[playerNum-1].column*globals.BOXSIDE+4,self.players[playerNum-1].row*globals.BOXSIDE+4,self.scene.penPlayer1Trace)
+            self.playersDrawings[playerNum-1] = self.scene.addLine((self.players[playerNum-1].column+1)*globals.BOXSIDE+4,self.players[playerNum-1].row*globals.BOXSIDE+4,self.players[playerNum-1].column*globals.BOXSIDE+4,self.players[playerNum-1].row*globals.BOXSIDE+4,self.scene.penPlayer1)
+
 
 
 
@@ -121,10 +163,12 @@ class BuilderSignals(QObject):
     started = Signal()
     finished = Signal()
     result = Signal(maze.Maze)
+
 class aiSignals(QObject):
     started = Signal()
     finished = Signal()
     result = Signal()
+    output = Signal(int)
 
 # Defining the thread Builder
 class Builder(QRunnable):
@@ -139,6 +183,19 @@ class Builder(QRunnable):
         createdMaze.Map()
         self.signals.result.emit(createdMaze)
         self.signals.finished.emit()
+
+class RandomAi(QRunnable):
+    def __init__(self,parent=None):
+        super(RandomAi, self).__init__()
+        self.signals = aiSignals()
+
+    def run(self):
+        while(globals.fini == False):
+            choix = random.choice(range(4))
+            self.signals.output.emit(choix)
+            time.sleep(0.01)
+        self.signals.finished.emit()
+
 
 
 
@@ -199,4 +256,20 @@ def drawBox(scene,pen,code,row,column) :
 
 
 
+if __name__ == "__main__":
+#==============Initializations==============#
+    globals.init()
 
+#==================GUI======================#
+
+    app = QApplication(sys.argv)
+
+    window = MainWindow()
+    window.resize(QScreen().availableGeometry().size())
+
+    window.ui.graphicsView.setScene(window.scene)
+    window.ui.graphicsView.centerOn(10,0)
+
+    window.showMaximized()
+
+    sys.exit(app.exec_())
