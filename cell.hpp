@@ -5,13 +5,7 @@
 #define cell_hpp
 
 #include <cstdint>
-
-
-struct coord //A pair of int, x and y
-{
-    int x;
-    int y;
-};
+#include <utility>
 
 class cell //a cell is a simple 2D object with 4 walls.
 {
@@ -29,7 +23,7 @@ class cell //a cell is a simple 2D object with 4 walls.
         bool get_isEntrance();
         bool get_isExit();
         std::uint8_t get_walls();
-        coord get_coords();
+        std::pair<int,int> get_coords();
 
         //Setter
         void set_groupNumber(int);
@@ -59,7 +53,7 @@ class cell //a cell is a simple 2D object with 4 walls.
         int coordX; 
         int coordY; 
 
-        coord coords;
+        std::pair<int,int> coords;
 
         //State of the walls are stocked as a byte : Each bit from the 4 lasts refer to a wall, in this order : North,East,South,West
         //A wall at "1" is up

@@ -6,6 +6,7 @@
 
 #include "cell.hpp"
 #include <vector>
+#include <set>
 
 class maze //A maze is a group of cells, including one enter and one exit
 
@@ -33,10 +34,9 @@ class maze //A maze is a group of cells, including one enter and one exit
         //Build the maze following the two rules stated above (see maze.cpp for more details)
         void build();
 
-        
 
     private:
-    std::vector<coord> unreachableCoords; //Used to build the maze
+    std::set<std::pair<int,int>> unreachableCoords; //Used to build the maze
     std::vector<std::vector<cell>> mazeCore; //The maze itself : cells in a 2D Array. Empty when built.
     std::vector<std::vector<uint8_t>> mazeMap;  //Map of the maze, using the walls (represented as bytes)
 };

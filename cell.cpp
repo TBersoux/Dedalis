@@ -6,8 +6,7 @@
 cell::cell(int groupN, int X,int Y) //No check on inputs, as the user shouldn't build a cell itself.
 {
     groupNumber = groupN;
-    coords.x = X;
-    coords.y = Y;
+    coords = std::make_pair(X,Y);
     isEntrance = false;
     isExit = false;
 
@@ -18,7 +17,7 @@ int cell::get_groupNumber(){return groupNumber;}
 bool cell::get_isEntrance(){return isEntrance;}
 bool cell::get_isExit(){return isExit;}
 std::uint8_t cell::get_walls(){return walls;}
-coord cell::get_coords(){return coords;}
+std::pair<int,int> cell::get_coords(){return coords;}
 
 void cell::set_groupNumber(int GN){groupNumber = GN;}
 

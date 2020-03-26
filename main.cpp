@@ -2,6 +2,7 @@
 #include "cell.hpp"
 #include "maze.hpp"
 #include "settings.h"
+#include <time.h>
 
 using namespace std;
 
@@ -64,6 +65,8 @@ void draw(int toDraw)
 
 int main(void)
 {
+    clock_t t1,t2;
+    t1=clock();
 
     maze laby;
     laby.build();
@@ -71,6 +74,7 @@ int main(void)
 
     for (int y = 0; y < MAX_Y; y++)
     {
+        //!! : POUR TESTER enlever break;
         break;
         for (int x = 0; x < MAX_X; x++)
         {
@@ -79,16 +83,9 @@ int main(void)
         cout << endl;
     }
     
-
-    /*for (size_t y = 0; y < MAX_Y; y++)
-    {
-        cout << endl;
-        for (size_t x = 0; x < MAX_X; x++)
-        {
-            cout << test[x][y].get_groupNumber() << " ";
-        }
-        
-    }*/
-    cout << "sortie" <<endl;
+    t2=clock();
+    float diff ((float)t2-(float)t1);
+    float seconds = diff / CLOCKS_PER_SEC;
+    cout << "sortie en sec :" << seconds <<endl;
     return 0;
     }

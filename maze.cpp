@@ -11,21 +11,18 @@ maze::maze(){
     //Core and map initialization + Initialization of the array of coords of the cells to modify
     mazeCore.resize(MAX_X);
     mazeMap.resize(MAX_X);
-    coord created;
     for (int x = 0; x < MAX_X; x++)
     {
-        created.x = x;
         mazeMap[x].resize(MAX_Y);
         for (int y = 0; y < MAX_Y; y++)
         {
-            cell newCell(x+y*MAX_X+1,x,y);
-            mazeCore[x].push_back(newCell);
-            created.y = y;
-            unreachableCoords.push_back(created);
+            mazeCore[x].emplace_back(x+y*MAX_X+1,x,y);
+            unreachableCoords.emplace(x,y);
         }
     }
 
     mazeCore[0][0].makeEnter();
+    unreachableCoords.erase({0,0});
     mazeCore[MAX_X-1][MAX_Y-1].makeExit();
     
 }
@@ -50,6 +47,11 @@ void maze::updateBuilder(int adjacentGN,int currentGN)
                 if (mazeCore[x][y].get_groupNumber() == currentGN)
                 {
                     mazeCore[x][y].set_groupNumber(adjacentGN);
+                    if (adjacentGN == 1) //GN=1 means that the cell is reachable, as it's the GN of the enter
+                    {
+                        unreachableCoords.erase({x,y});
+                    }
+                    
                 }
                 
             }
@@ -66,6 +68,10 @@ void maze::updateBuilder(int adjacentGN,int currentGN)
                 if (mazeCore[x][y].get_groupNumber() == adjacentGN)
                 {
                     mazeCore[x][y].set_groupNumber(currentGN);
+                    if (currentGN == 1)
+                    {
+                        unreachableCoords.erase({x,y});
+                    }
                 }
                 
             }
@@ -95,12 +101,13 @@ void maze::build()
     int i = 0;
     while (unreachableCoords.size()>0)
     {
-        
         //We choose a random cell and a random direction for the wall to destroy
         std::uniform_int_distribution<int> uniCells(0,unreachableCoords.size()-1);
         int randomNumber = uniCells(rng);
-        int x = unreachableCoords[randomNumber].x;
-        int y = unreachableCoords[randomNumber].y;
+        auto iter = unreachableCoords.begin();
+        advance(iter,randomNumber);
+        int x = (*iter).first;
+        int y = (*iter).second;
         int chosenWall = uni14(rng);
 
         switch (chosenWall)
@@ -149,18 +156,6 @@ void maze::build()
                 }
             }
             break;
-        }
-
-        //Let's delete from unreachableCoords all coords from cells in group 1, since they are now reachable
-        for (int cpt = 0; cpt < unreachableCoords.size(); cpt++)
-        {
-            if (mazeCore[unreachableCoords[cpt].x][unreachableCoords[cpt].y].get_groupNumber() == 1)
-            {
-                unreachableCoords.erase(unreachableCoords.begin()+cpt); //remove the cell (randomNumber-th element)
-                unreachableCoords.shrink_to_fit();
-                int test = unreachableCoords.size();
-                std::cout << test << endl;
-            }
         }
         i++;
     }
