@@ -3,8 +3,8 @@
 
 #include "settings.h"
 
-int MAX_X = 300;
-int MAX_Y = 300;
+int MAX_X = 50;
+int MAX_Y = 50;
 
 //!TODO le manuel
 void change_settings()

@@ -8,12 +8,14 @@
 
 maze::maze(){
 
-    //Core initialization + Initialization of the array of coords of the cells to modify
+    //Core and map initialization + Initialization of the array of coords of the cells to modify
     mazeCore.resize(MAX_X);
+    mazeMap.resize(MAX_X);
     coord created;
     for (int x = 0; x < MAX_X; x++)
     {
         created.x = x;
+        mazeMap[x].resize(MAX_Y);
         for (int y = 0; y < MAX_Y; y++)
         {
             cell newCell(x+y*MAX_X+1,x,y);
@@ -162,7 +164,20 @@ void maze::build()
         }
         i++;
     }
+
+    //Now that the maze is built, we draw the map
+    for (int x = 0; x < mazeCore.size(); x++)
+    {
+        for (int y = 0; y < mazeCore.size(); y++)
+        {
+            mazeMap[x][y] = mazeCore[x][y].get_walls();
+        }
+            
+    }
+
     std::cout << "i=" << i <<endl;
+
+
 }
 
 
