@@ -1,11 +1,16 @@
 #include <string>
 #include "cell.hpp"
 #include "maze.hpp"
-#include "settings.h"
 #include <time.h>
+#include <iostream>
+#include <QApplication>
+#include "window.h"
+#include <QWidget>
 
 using namespace std;
 
+
+//Used to test things
 void draw(int toDraw)
 {
     switch (toDraw)
@@ -63,36 +68,54 @@ void draw(int toDraw)
     
 }
 
+
+
+
+string mode = "gui";
+int main_x = 100;
+int main_y = 100;
+
 int main(int argc, char *argv[])
 {
-    if (argc == 3)
+    if (argc > 2)
     {
-        MAX_X = atol(argv[1]);
-        MAX_Y = atol(argv[2]);
+        main_x = atol(argv[1]);
+        main_y = atol(argv[2]);
+	mode = "manual";
     }
     
-   
-    clock_t t1,t2;
-    t1=clock();
+   if (mode == "gui")
+   {
+       QApplication app(argc, argv);
 
-    maze laby;
-    laby.build();
-    auto carte = laby.get_mazeMap();
+       window mainWindow;
+       mainWindow.show();
 
-    t2=clock();
-    float diff ((float)t2-(float)t1);
-    float seconds = diff / CLOCKS_PER_SEC;
-    cout << seconds << "secondes" << endl << endl;
+       return app.exec();
+   }
+   else
+   {
+       clock_t t1,t2;
+       t1=clock();
 
+       maze aMaze(main_x,main_y);
+       aMaze.build();
+       auto carte = aMaze.get_mazeMap();
 
+       t2=clock();
+       float diff ((float)t2-(float)t1);
+       float seconds = diff / CLOCKS_PER_SEC;
+       cout << "Seconds to build : "  << seconds << endl << endl;
 
-    for (int y = 0; y < MAX_Y; y++)
-    {
-        for (int x = 0; x < MAX_X; x++)
-        {
-            draw((int)carte[x][y]);
-        }
-        cout << endl;
-    }
-    return 0;
+       //Uncomment this to see a drawing on the maze in stdout (But you should use gui mode)
+
+      /* for (int y = 0; y < main_y; y++)
+       {
+           for (int x = 0; x < main_x; x++)
+           {
+               cout << draw((int)carte[x][y]);
+           }
+           cout << endl;
+       }*/
+   }
 }

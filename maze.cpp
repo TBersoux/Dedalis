@@ -6,8 +6,10 @@
 #include <random>
 
 
-maze::maze(){
-
+maze::maze(int x,int y)
+{
+    MAX_X = x;
+    MAX_Y = y;
     //Core and map initialization + Initialization of the array of coords of the cells to modify
     mazeCore.resize(MAX_X);
     mazeMap.resize(MAX_X);
@@ -33,7 +35,10 @@ maze::~maze(){}
 
 std::vector<std::vector<uint8_t>> maze::get_mazeMap(){return mazeMap;}
 std::vector<std::vector<cell>> maze::get_mazeCore(){return mazeCore;}
-
+int maze::get_MAX_X(){return MAX_X;}
+int maze::get_MAX_Y(){return MAX_Y;}
+void maze::set_MAX_X(int x){MAX_X = x;}
+void maze::set_MAX_Y(int y){MAX_Y = y;}
 
 
 void maze::updateBuilder(int adjacentGN,int currentGN)
@@ -98,7 +103,7 @@ void maze::build()
     std::mt19937 rng(rd());
     std::uniform_int_distribution<int> uni14(1,4);
 
-    int i = 0;
+    int cpt = 0;
     while (unreachableCoords.size()>0)
     {
         //We choose a random cell and a random direction for the wall to destroy
@@ -157,20 +162,20 @@ void maze::build()
             }
             break;
         }
-        i++;
+        cpt++;
     }
 
     //Now that the maze is built, we draw the map
-    for (int x = 0; x < mazeCore.size(); x++)
+    for (unsigned x = 0; x < mazeCore.size(); x++)
     {
-        for (int y = 0; y < mazeCore[x].size(); y++)
+        for (unsigned y = 0; y < mazeCore[x].size(); y++)
         {
             mazeMap[x][y] = mazeCore[x][y].get_walls();
         }
             
     }
 
-    std::cout << "i=" << i <<endl;
+    std::cout << "Number of modification turns : " << cpt <<endl;
 
 
 }

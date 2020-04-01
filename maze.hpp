@@ -12,8 +12,8 @@ class maze //A maze is a group of cells, including one enter and one exit
 
 {
     public:
-        //Constructor
-        maze();
+        //Constructors
+        maze(int, int);
 
         //Destructor
         ~maze();
@@ -21,6 +21,13 @@ class maze //A maze is a group of cells, including one enter and one exit
         //Getters
         std::vector<std::vector<uint8_t>> get_mazeMap(); 
         std::vector<std::vector<cell>> get_mazeCore(); // should not be used
+        int get_MAX_X();
+        int get_MAX_Y();
+
+        //Setters
+        void set_MAX_X(int);
+        void set_MAX_Y(int);
+
 
         //Updates all the cells' groupnumbers depending of the chosen cells when calling maze.build()
         //See maze.build for details
@@ -39,6 +46,8 @@ class maze //A maze is a group of cells, including one enter and one exit
     std::set<std::pair<int,int>> unreachableCoords; //Used to build the maze
     std::vector<std::vector<cell>> mazeCore; //The maze itself : cells in a 2D Array. Empty when built.
     std::vector<std::vector<uint8_t>> mazeMap;  //Map of the maze, using the walls (represented as bytes)
+    int MAX_X;
+    int MAX_Y;
 };
 
 
