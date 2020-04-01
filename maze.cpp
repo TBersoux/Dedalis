@@ -163,7 +163,7 @@ void maze::build()
     //Now that the maze is built, we draw the map
     for (int x = 0; x < mazeCore.size(); x++)
     {
-        for (int y = 0; y < mazeCore.size(); y++)
+        for (int y = 0; y < mazeCore[x].size(); y++)
         {
             mazeMap[x][y] = mazeCore[x][y].get_walls();
         }

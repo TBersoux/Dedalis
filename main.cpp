@@ -63,8 +63,15 @@ void draw(int toDraw)
     
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
+    if (argc == 3)
+    {
+        MAX_X = atol(argv[1]);
+        MAX_Y = atol(argv[2]);
+    }
+    
+   
     clock_t t1,t2;
     t1=clock();
 
@@ -72,20 +79,20 @@ int main(void)
     laby.build();
     auto carte = laby.get_mazeMap();
 
-    for (int y = 0; y < MAX_Y; y++)
-    {
-        //!! : POUR TESTER enlever break;
-        break;
-        for (int x = 0; x < MAX_X; x++)
-        {
-            draw(int(carte[x][y]));
-        }
-        cout << endl;
-    }
-    
     t2=clock();
     float diff ((float)t2-(float)t1);
     float seconds = diff / CLOCKS_PER_SEC;
-    cout << "sortie en sec :" << seconds <<endl;
-    return 0;
+    cout << seconds << "secondes" << endl << endl;
+
+
+
+    for (int y = 0; y < MAX_Y; y++)
+    {
+        for (int x = 0; x < MAX_X; x++)
+        {
+            draw((int)carte[x][y]);
+        }
+        cout << endl;
     }
+    return 0;
+}

@@ -3,11 +3,6 @@
 
 #include "settings.h"
 
-int MAX_X = 300;
-int MAX_Y = 300;
+int MAX_X = 100;
+int MAX_Y = 100;
 
-//!TODO le manuel
-void change_settings()
-{
-    cout << "Rien de spécifié !! Valeurs par défaut." << endl;
-}

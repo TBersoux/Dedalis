@@ -13,8 +13,4 @@ using namespace std;
 extern int MAX_X; //Number of columns of the maze
 extern int MAX_Y; //Number of rows of the maze
 
-
-//Override the default values of the global variables
-void change_settings();
-
 #endif
