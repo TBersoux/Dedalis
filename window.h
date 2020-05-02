@@ -26,6 +26,7 @@ public:
     void set_window_x(int);
     void set_window_y(int);
 
+    std::vector<std::vector<uint8_t>> build();
     void draw(std::vector<std::vector<uint8_t>>);
 
 

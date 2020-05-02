@@ -112,7 +112,7 @@
         <bool>true</bool>
        </property>
        <property name="text">
-        <string>Please wait while generating</string>
+        <string>Please wait while generating ...</string>
        </property>
       </widget>
      </item>
