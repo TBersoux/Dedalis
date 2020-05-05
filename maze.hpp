@@ -31,7 +31,10 @@ class maze //A maze is a group of cells, including one enter and one exit
 
         //Updates all the cells' groupnumbers depending of the chosen cells when calling maze.build()
         //See maze.build for details
-        void updateBuilder(int, int);
+        void updateGroups(int, int);
+
+        //Check for surrounded cells, and removes them
+        void removeSurrounded();
 
         /* Rules to build the maze :
         #1 A wall on the edge of a maze cannot be destroyed
