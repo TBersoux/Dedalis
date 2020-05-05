@@ -3,6 +3,7 @@ A little maze generator made to train my algorithm skills.
 
 Only a single path go from one cell to another. It's also true for the enter and the exit.
 
-To compile, use qmake and make.
-To use with the GUI, just run the exe. 
-You can also call the exe with two parameters, width and weight (e.g.: ./dedalis 50 50) to run it without GUI (To do performances test for maze generation).
+To compile, use qmake and make then execute the compiled code.
+
+Current features :
+- Randomly generate a maze. Max size under a minute is 300x300
