@@ -7,8 +7,9 @@
 #include "window.h"
 #include <QWidget>
 
-using namespace std;
+#include <fstream>
 
+using namespace std;
 
 //Used to test things
 void draw(int toDraw)
@@ -16,60 +17,56 @@ void draw(int toDraw)
     switch (toDraw)
     {
     case 1:
-        cout <<"|  ";
+        cout << "|  ";
         break;
     case 2:
-        cout <<" _ ";
+        cout << " _ ";
         break;
     case 3:
-        cout <<"|_ ";
+        cout << "|_ ";
         break;
     case 4:
-        cout <<"|  ";
+        cout << "|  ";
         break;
     case 5:
-        cout <<"| |";
+        cout << "| |";
         break;
     case 6:
-        cout <<" _|";
+        cout << " _|";
         break;
     case 7:
-        cout <<"|_|";
+        cout << "|_|";
         break;
     case 8:
-        cout <<" - ";
+        cout << " - ";
         break;
     case 9:
-        cout <<"|- ";
+        cout << "|- ";
         break;
     case 10:
-        cout <<" = ";
+        cout << " = ";
         break;
     case 11:
-        cout <<"|= ";
+        cout << "|= ";
         break;
     case 12:
-        cout <<" -|";
+        cout << " -|";
         break;
     case 13:
-        cout <<"|-|";
+        cout << "|-|";
         break;
     case 14:
-        cout <<" =|";
+        cout << " =|";
         break;
     case 15:
-        cout <<"|=|";
+        cout << "|=|";
         break;
-    
+
     default:
-    cout << "   ";
+        cout << "   ";
         break;
     }
-    
 }
-
-
-
 
 string mode = "gui";
 int main_x = 100;
@@ -81,35 +78,41 @@ int main(int argc, char *argv[])
     {
         main_x = atol(argv[1]);
         main_y = atol(argv[2]);
-	mode = "manual";
+        mode = "manual";
     }
     
-   if (mode == "gui")
-   {
-       QApplication app(argc, argv);
 
-       window mainWindow;
-       mainWindow.show();
+    if (mode == "gui")
+    {
+        QApplication app(argc, argv);
 
-       return app.exec();
-   }
-   else
-   {
-       clock_t t1,t2;
-       t1=clock();
+        window mainWindow;
+        mainWindow.show();
 
-       maze aMaze(main_x,main_y);
-       aMaze.build();
-       auto carte = aMaze.get_mazeMap();
+        return app.exec();
+    }
+    else
+    {
 
-       t2=clock();
-       float diff ((float)t2-(float)t1);
-       float seconds = diff / CLOCKS_PER_SEC;
-       cout << "Seconds to build : "  << seconds << endl << endl;
+        clock_t t1, t2;
+        t1 = clock();
 
-       //Uncomment this to see a drawing on the maze in stdout (But you should use gui mode)
+        maze aMaze(main_x, main_y);
+        aMaze.build();
+        auto carte = aMaze.get_mazeMap();
 
-      /* for (int y = 0; y < main_y; y++)
+        t2 = clock();
+        float diff((float)t2 - (float)t1);
+        float seconds = diff / CLOCKS_PER_SEC;
+        cout << "Seconds to build : " << seconds << endl;
+        ofstream out;
+        out.open("tests.txt", ios::app);
+        out << "Temps : " << seconds << endl;
+        out.close();
+
+        //Uncomment this to see a drawing on the maze in stdout (But you should use gui mode)
+
+        /* for (int y = 0; y < main_y; y++)
        {
            for (int x = 0; x < main_x; x++)
            {
@@ -117,5 +120,5 @@ int main(int argc, char *argv[])
            }
            cout << endl;
        }*/
-   }
+    }
 }

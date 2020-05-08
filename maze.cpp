@@ -3,6 +3,7 @@
 
 #include "maze.hpp"
 #include <random>
+#include <thread>
 
 //TODO : REMOVE IOSTREAM
 #include <iostream>
@@ -40,46 +41,58 @@ void maze::set_MAX_Y(int y) { MAX_Y = y; }
 
 void maze::removeSurrounded()
 {
-    for (auto coordsToCheck : unreachableCoords)
+    std::set<std::pair<int, int>> surroundedCoords;
+    while (unreachableCoords.size() > 100)
     {
-        int x = coordsToCheck.first;
-        int y = coordsToCheck.second;
-        bool surrounded = true;
+        for (auto coordsToCheck : unreachableCoords)
+        {
+            int x = coordsToCheck.first;
+            int y = coordsToCheck.second;
+            bool surrounded = true;
 
-        if (y != 0) //Rule #1
-        {
-            if (mazeCore[x][y - 1].get_groupNumber() != mazeCore[x][y].get_groupNumber()) //Rule #2
+            if (y != 0) //Rule #1
             {
-                surrounded = false;
+                if (mazeCore[x][y - 1].get_groupNumber() != mazeCore[x][y].get_groupNumber()) //Rule #2
+                {
+                    surrounded = false;
+                }
+            }
+            if ((surrounded) and (x != MAX_X - 1)) //Rule #1
+            {
+                if (mazeCore[x + 1][y].get_groupNumber() != mazeCore[x][y].get_groupNumber()) //Rule #2
+                {
+                    surrounded = false;
+                }
+            }
+            if ((surrounded) and (y != MAX_Y - 1)) //Rule #1
+            {
+                if (mazeCore[x][y + 1].get_groupNumber() != mazeCore[x][y].get_groupNumber()) //Rule #2
+                {
+                    surrounded = false;
+                }
+            }
+            if ((surrounded) and (x != 0)) //Rule #1
+            {
+                if (mazeCore[x - 1][y].get_groupNumber() != mazeCore[x][y].get_groupNumber()) //Rule #2
+                {
+                    surrounded = false;
+                }
+            }
+            if (surrounded)
+            {
+                surroundedCoords.insert(coordsToCheck);
             }
         }
 
-        if ((surrounded) and (x != MAX_X - 1)) //Rule #1
+        if (surroundedCoords.size() > 1)
         {
-            if (mazeCore[x + 1][y].get_groupNumber() != mazeCore[x][y].get_groupNumber()) //Rule #2
+            unreachableMutex.lock();
+            for (auto &&coord : surroundedCoords)
             {
-                surrounded = false;
+                unreachableCoords.erase(coord);
             }
-        }
-        if ((surrounded) and (y != MAX_Y - 1)) //Rule #1
-        {
-            if (mazeCore[x][y + 1].get_groupNumber() != mazeCore[x][y].get_groupNumber()) //Rule #2
-            {
-                surrounded = false;
-            }
-        }
-        if ((surrounded) and (x != 0)) //Rule #1
-        {
-            if (mazeCore[x - 1][y].get_groupNumber() != mazeCore[x][y].get_groupNumber()) //Rule #2
-            {
-                surrounded = false;
-            }
-        }
-
-        if (surrounded)
-        {
-            std::cout << "On remove hop hop" << std::endl;
-            unreachableCoords.erase(coordsToCheck);
+            unreachableMutex.unlock();
+            surroundedCoords.clear();
         }
     }
 }
@@ -124,23 +137,19 @@ void maze::updateGroups(int adjacentGN, int currentGN)
 -When all cells are in group 1, the build is done, we draw and return the map */
 void maze::build()
 {
+    std::thread t1(&maze::removeSurrounded, this);
+
     //Random init
     std::random_device rd;
     std::mt19937 rng(rd());
     std::uniform_int_distribution<int> uni14(1, 4);
 
     int cpt = 0;
-    int rule1 = 0;
-    int rule2 = 0;
 
     while (unreachableCoords.size() > 0)
     {
-        if (cpt % 5000 == 0)
-        {
-            removeSurrounded();
-        }
-
-        std::cout << unreachableCoords.size() << std::endl;
+        unreachableMutex.lock();
+        //std::cout << unreachableCoords.size() << std::endl;
         //We choose a random cell and a random direction for the wall to destroy
         std::uniform_int_distribution<int> uniCells(0, unreachableCoords.size() - 1);
         int randomNumber = uniCells(rng);
@@ -163,17 +172,8 @@ void maze::build()
                         mazeCore[x][y].removeWallNorth();
                         mazeCore[x][y - 1].removeWallSouth();
                         updateGroups(mazeCore[x][y - 1].get_groupNumber(), mazeCore[x][y].get_groupNumber());
-
                         test = 5;
                     }
-                    else
-                    {
-                        rule2++;
-                    }
-                }
-                else
-                {
-                    rule1++;
                 }
                 break;
             case 2:                 //East
@@ -184,17 +184,8 @@ void maze::build()
                         mazeCore[x][y].removeWallEast();
                         mazeCore[x + 1][y].removeWallWest();
                         updateGroups(mazeCore[x + 1][y].get_groupNumber(), mazeCore[x][y].get_groupNumber());
-
                         test = 5;
                     }
-                    else
-                    {
-                        rule2++;
-                    }
-                }
-                else
-                {
-                    rule1++;
                 }
                 break;
             case 3:                 //South
@@ -205,17 +196,8 @@ void maze::build()
                         mazeCore[x][y].removeWallSouth();
                         mazeCore[x][y + 1].removeWallNorth();
                         updateGroups(mazeCore[x][y + 1].get_groupNumber(), mazeCore[x][y].get_groupNumber());
-
                         test = 5;
                     }
-                    else
-                    {
-                        rule2++;
-                    }
-                }
-                else
-                {
-                    rule1++;
                 }
                 break;
             case 4:         //West
@@ -226,105 +208,19 @@ void maze::build()
                         mazeCore[x][y].removeWallWest();
                         mazeCore[x - 1][y].removeWallEast();
                         updateGroups(mazeCore[x - 1][y].get_groupNumber(), mazeCore[x][y].get_groupNumber());
-
                         test = 5;
                     }
-                    else
-                    {
-                        rule2++;
-                    }
-                }
-                else
-                {
-                    rule1++;
                 }
                 break;
             }
             chosenWall = (chosenWall + 1) % 5; //circular way to test next wall if it failed
             test++;
         }
-
-        switch (chosenWall)
-        {
-        case 1:         //North
-            if (y != 0) //Rule #1
-            {
-                if (mazeCore[x][y - 1].get_groupNumber() != mazeCore[x][y].get_groupNumber()) //Rule #2
-                {
-                    mazeCore[x][y].removeWallNorth();
-                    mazeCore[x][y - 1].removeWallSouth();
-                    updateGroups(mazeCore[x][y - 1].get_groupNumber(), mazeCore[x][y].get_groupNumber());
-                }
-                else
-                {
-                    rule2++;
-                }
-            }
-            else
-            {
-                rule1++;
-            }
-            break;
-        case 2:                 //East
-            if (x != MAX_X - 1) //Rule #1
-            {
-                if (mazeCore[x + 1][y].get_groupNumber() != mazeCore[x][y].get_groupNumber()) //Rule #2
-                {
-                    mazeCore[x][y].removeWallEast();
-                    mazeCore[x + 1][y].removeWallWest();
-                    updateGroups(mazeCore[x + 1][y].get_groupNumber(), mazeCore[x][y].get_groupNumber());
-                }
-                else
-                {
-                    rule2++;
-                }
-            }
-            else
-            {
-                rule1++;
-            }
-            break;
-        case 3:                 //South
-            if (y != MAX_Y - 1) //Rule #1
-            {
-                if (mazeCore[x][y + 1].get_groupNumber() != mazeCore[x][y].get_groupNumber()) //Rule #2
-                {
-                    mazeCore[x][y].removeWallSouth();
-                    mazeCore[x][y + 1].removeWallNorth();
-                    updateGroups(mazeCore[x][y + 1].get_groupNumber(), mazeCore[x][y].get_groupNumber());
-                }
-                else
-                {
-                    rule2++;
-                }
-            }
-            else
-            {
-                rule1++;
-            }
-            break;
-        case 4:         //West
-            if (x != 0) //Rule #1
-            {
-                if (mazeCore[x - 1][y].get_groupNumber() != mazeCore[x][y].get_groupNumber()) //Rule #2
-                {
-                    mazeCore[x][y].removeWallWest();
-                    mazeCore[x - 1][y].removeWallEast();
-                    updateGroups(mazeCore[x - 1][y].get_groupNumber(), mazeCore[x][y].get_groupNumber());
-                }
-                else
-                {
-                    rule2++;
-                }
-            }
-            else
-            {
-                rule1++;
-            }
-            break;
-        }
         cpt++;
+        unreachableMutex.unlock();
     }
+
+    t1.join();
 
     //Now that the maze is built, we draw the map
     for (unsigned x = 0; x < mazeCore.size(); x++)
@@ -336,5 +232,4 @@ void maze::build()
     }
 
     std::cout << "Number of modification turns : " << cpt << std::endl;
-    std::cout << "Rule 1 : " << rule1 << " Rule 2 : " << rule2 << std::endl;
 }

@@ -31,7 +31,6 @@ std::vector<std::vector<uint8_t>> window::build()
 
     clock_t t1, t2;
     t1 = clock();
-
     maze aMaze(window_x, window_y);
     aMaze.build();
 
