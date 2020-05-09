@@ -5,9 +5,6 @@
 #include <random>
 #include <thread>
 
-//TODO : REMOVE IOSTREAM
-#include <iostream>
-
 maze::maze(int x, int y)
 {
     MAX_X = x;
@@ -230,6 +227,4 @@ void maze::build()
             mazeMap[x][y] = mazeCore[x][y].get_walls();
         }
     }
-
-    std::cout << "Number of modification turns : " << cpt << std::endl;
 }
